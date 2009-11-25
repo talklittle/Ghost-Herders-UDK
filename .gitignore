@@ -1,3 +1,12 @@
 UTGame
 Binaries
 Engine
+Development/Src/Core/
+Development/Src/GameFramework/
+Development/Src/IpDrv/
+Development/Src/MyMod/
+Development/Src/OnlineSubsystemPC/
+Development/Src/UTEditor/
+Development/Src/UTGameContent/
+Development/Src/UnrealEd/
+Development/Src/UnrealScriptTest/
