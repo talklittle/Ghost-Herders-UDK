@@ -31,7 +31,7 @@ simulated function bool CalcCamera(float fDeltaTime, out vector out_CamLoc, out 
 		// use cameraDisplacement for fixed camera
                 cameraDisplacement.X = 0;
                 cameraDisplacement.Y = 0;
-                cameraDisplacement.Z = 45000;
+                cameraDisplacement.Z = 48000;
 		end = cameraDisplacement;
 	}
 	else
@@ -52,7 +52,7 @@ simulated function bool CalcCamera(float fDeltaTime, out vector out_CamLoc, out 
 	
 	//out_CamRot = Rotator(Location - (out_CamLoc - vect(0,0,192)));
 	out_CamRot = Rotator(vect(0,0,0) - out_CamLoc);
-	out_FOV = 2.f;
+	out_FOV = 1.5f;
 	return true;
 }
 

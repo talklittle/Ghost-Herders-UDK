@@ -51,6 +51,9 @@ DefaultProperties
 
     // The main collision mesh for the Ghost - used to get RigidBodyCollision events
     Begin Object Class=StaticMeshComponent Name=StaticMeshComponent0
+	Scale=1.0
+	MotionBlurScale=1.0
+	Scale3D=(X=0.25,Y=0.25,Z=0.25)
         LightEnvironment=MyLightEnvironment
         bUsePrecomputedShadows=FALSE
         StaticMesh=StaticMesh'EngineMeshes.Cube'
