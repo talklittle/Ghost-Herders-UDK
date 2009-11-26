@@ -24,9 +24,13 @@ exec function StartFire( optional byte FireModeNum )
 			TraceStart = ghHUD.WorldOrigin;
 			// Trace ends at Board
 			TraceEnd = ghHUD.WorldOrigin + ghHUD.WorldDirection*50000;
+			if (Trace(HitLocation, HitNormal, TraceEnd, TraceStart, false) != None)
+			{
+				`log("Level HitLocation"@HitLocation);
+			}
 			if (GhostCharacter(Trace(HitLocation, HitNormal, TraceEnd, TraceStart)) != None)
 			{
-			  `log("hi");
+				`log("HitLocation"@HitLocation);
 			}
 		}
 	}

@@ -1,4 +1,12 @@
 class GhostHerdersPawn extends UTPawn;
+
+var int GridRow, GridColumn;
+
+function bool IsCarryingTriangle()
+{
+	// TODO
+	return false;
+}
 	
 simulated function FaceRotation(rotator NewRotation, float DeltaTime)
 {
