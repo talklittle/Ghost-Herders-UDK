@@ -1,13 +1,12 @@
 class GhostHerdersPlayerController extends UTPlayerController;
-	
+
 // The player wants to fire.
 exec function StartFire( optional byte FireModeNum )
 {
 	local GhostCharacter C;
 	local GhostHerdersHUD ghHUD;
-	local float CamDist;
 	local vector TraceStart, TraceEnd, HitLocation, HitNormal;
-	local TraceHitInfo HitInfo;
+	local int GridRow, GridColumn;
 
 	if ( WorldInfo.Pauser == PlayerReplicationInfo )
 	{
@@ -26,11 +25,15 @@ exec function StartFire( optional byte FireModeNum )
 			TraceEnd = ghHUD.WorldOrigin + ghHUD.WorldDirection*50000;
 			if (Trace(HitLocation, HitNormal, TraceEnd, TraceStart, false) != None)
 			{
-				`log("Level HitLocation"@HitLocation);
+				//HitLocation += class'GhostHerdersGameInfo'.const.MAP_CORRECTION_VECTOR;
+				//`log("Level corrected HitLocation"@HitLocation);
+				class'GhostHerdersGameInfo'.static.GridFromLocation(HitLocation, GridRow, GridColumn);
+				`log("Level Grid Row, Column"@GridRow@GridColumn);
 			}
 			if (GhostCharacter(Trace(HitLocation, HitNormal, TraceEnd, TraceStart)) != None)
 			{
-				`log("HitLocation"@HitLocation);
+				HitLocation += class'GhostHerdersGameInfo'.const.MAP_CORRECTION_VECTOR;
+				`log("Corrected HitLocation"@HitLocation);
 			}
 		}
 	}

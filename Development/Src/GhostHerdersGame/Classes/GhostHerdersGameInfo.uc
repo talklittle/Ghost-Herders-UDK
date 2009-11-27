@@ -13,9 +13,22 @@ struct TilePath
 var TilePath GridShortestPaths[120];
 const GRID_NUM_ROWS=12;
 const GRID_NUM_COLUMNS=10;
+// XXX: Map should really have bottom-left corner at (0, 0)
+const MAP_CORRECTION_VECTOR=vect(352, 288, 0);
+	
 
 var array<int> GhostCharacterPositions;
 var array<int> TrianglePositions;
+
+static function GridFromLocation(Vector GridLocation, out int GridRow, out int GridColumn)
+{
+	local Vector CorrectedLocation;
+	CorrectedLocation = GridLocation + MAP_CORRECTION_VECTOR;
+
+	// Yes, X is up-and-down = row
+	GridRow = (GRID_NUM_ROWS * 64 - CorrectedLocation.X) / 64;
+	GridColumn = CorrectedLocation.Y / 64;
+}
 
 /** Recursive function to find number of steps to surrounding tiles */
 function FindNumSteps(GhostHerdersPawn GHPawn, int Origin, TilePath pathToHere, int StepsLeft)
