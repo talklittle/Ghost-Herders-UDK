@@ -63,6 +63,6 @@ defaultproperties
 	bShowCursor = 1
 	CursorX=0
 	CursorY=0
-	WorldOrigin=vect(0,0,0)
-	WorldDirection=vect(0,0,0)
+	WorldOrigin=(X=0,Y=0,Z=0)
+	WorldDirection=(X=0,Y=0,Z=0)
 }

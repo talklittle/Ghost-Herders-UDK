@@ -1,4 +1,4 @@
-class GhostHerdersPawn extends UTPawn;
+class GhostHerdersPawn extends GamePawn;
 
 var int GridRow, GridColumn;
 
@@ -66,8 +66,5 @@ simulated function bool CalcCamera(float fDeltaTime, out vector out_CamLoc, out 
 
 defaultproperties
 {
-	Begin Object Name=WPawnSkeletalMeshComponent
-		bOwnerNoSee=false
-	End Object
 	Name="Default__GhostHerdersPawn"
 }

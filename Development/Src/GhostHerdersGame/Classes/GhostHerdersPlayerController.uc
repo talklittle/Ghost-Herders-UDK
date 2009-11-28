@@ -1,4 +1,4 @@
-class GhostHerdersPlayerController extends UTPlayerController;
+class GhostHerdersPlayerController extends PlayerController;
 
 // The player wants to fire.
 exec function StartFire( optional byte FireModeNum )
@@ -40,12 +40,6 @@ exec function StartFire( optional byte FireModeNum )
 }
 
 
-
-event Possess(Pawn inPawn, bool bVehicleTransition)
-{
-	Super.Possess(inPawn, bVehicleTransition);
-	SetBehindView(true);	
-}
 
 defaultproperties
 {

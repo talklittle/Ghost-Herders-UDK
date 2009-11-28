@@ -1,4 +1,5 @@
-class GhostHerdersGameInfo extends UTDeathmatch;
+class GhostHerdersGameInfo extends GameInfo
+	config(Game);
 
 struct TilePath
 {
@@ -94,17 +95,22 @@ function FindNumSteps(GhostHerdersPawn GHPawn, int Origin, TilePath pathToHere, 
 	}
 }
 
+exec function ShowMenu()
+{
+	local PlayerController PC;
+	foreach WorldInfo.AllControllers(class'PlayerController', PC)
+	{
+		PC.ConsoleCommand( "quit" );
+	}
+}
+
+
 defaultproperties
 {
-	Acronym="GH"	
-
-	MapPrefixes.Empty
-	MapPrefixes(0)="GH"
-
-	DefaultMapPrefixes.Empty
-	DefaultMapPrefixes(0)=(Prefix="GH",GameType="GhostHerdersGame.GhostHerdersGameInfo")
-
 	HUDType=class'GhostHerdersHUD'
+	bDelayedStart=false
+	bRestartLevel=False
+
 	PlayerControllerClass=class'GhostHerdersPlayerController'
 	DefaultPawnClass=class'GhostHerdersPawn'
 
