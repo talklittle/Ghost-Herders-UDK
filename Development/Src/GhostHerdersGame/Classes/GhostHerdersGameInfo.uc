@@ -10,14 +10,18 @@ struct TilePath
 	var array<int> Path;
 };
 
+var GhostCharacter Chester;
+
 // Number of steps to each location in 12 row, 10 column grid
 var TilePath GridShortestPaths[120];
 const GRID_NUM_ROWS=12;
 const GRID_NUM_COLUMNS=10;
-// XXX: Map should really have bottom-left corner at (0, 0)
+// TODO: Map should really have bottom-left corner at (0, 0)
 const MAP_CORRECTION_VECTOR=vect(352, 288, 0);
+// TODO: Could use split screen PlayerControllers instead
+var int CurrentPlayer;  // 1,2
+var bool IsCoinHeads;
 	
-
 var array<int> GhostCharacterPositions;
 var array<int> TrianglePositions;
 
@@ -29,6 +33,58 @@ static function GridFromLocation(Vector GridLocation, out int GridRow, out int G
 	// Yes, X is up-and-down = row
 	GridRow = (GRID_NUM_ROWS * 64 - CorrectedLocation.X) / 64;
 	GridColumn = CorrectedLocation.Y / 64;
+}
+
+function SwitchPlayers()
+{
+	local int i;
+
+	// Flip "coin" if necessary
+	If (CurrentPlayer == 1)
+	{
+		CurrentPlayer = 2;
+	}
+	else
+	{
+		CurrentPlayer = 1;
+		// Flip coin after both players have gone
+		IsCoinheads = !IsCoinHeads;
+	}
+	
+	// Chester moves
+	Chester.MoveGrid();
+
+	// After Chester is done moving, the player can move
+}
+
+function SelectPawn(GhostHerdersPawn GHPawn)
+{
+	local int i;
+
+	if (GHPawn.GHOwner != CurrentPlayer)
+	{
+		return;
+	}
+
+	// Clear GridShortestPaths to hold valid moves
+	for (i = 0; i < GRID_NUM_ROWS * GRID_NUM_COLUMNS; i++)
+	{
+		GridShortestPaths[i].NumSteps = -1;
+		GridShortestPaths[i].Path.Length = 0;
+	}
+}
+
+function SelectDestination(GhostHerdersPawn GHPawn, Vector Destination)
+{
+	local int DestRow, DestColumn, GridIndex;
+	GridFromLocation(Destination, DestRow, DestColumn);
+	GridIndex = DestRow * GRID_NUM_COLUMNS + DestColumn;
+
+	// Destination is valid if number of steps is tractable by Pawn
+	if (GridShortestPaths[GridIndex].NumSteps <= GHPawn.GetAP(IsCoinHeads))
+	{
+		GHPawn.MoveGrid(DestRow, DestColumn);
+	}
 }
 
 /** Recursive function to find number of steps to surrounding tiles */
@@ -55,7 +111,7 @@ function FindNumSteps(GhostHerdersPawn GHPawn, int Origin, TilePath pathToHere, 
 	{
 		Dest = Origin - 1;
 		// Good destination if it doesn't contain something that collides with GHPawn
-		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle() || TrianglePositions.Find(Dest) == -1))
+		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle || TrianglePositions.Find(Dest) == -1))
 		{
 			nextPath = pathToHere;
 			nextPath.Path.Add(Dest);
@@ -65,7 +121,7 @@ function FindNumSteps(GhostHerdersPawn GHPawn, int Origin, TilePath pathToHere, 
 	if ((Origin + 1) % GRID_NUM_COLUMNS != 0)
 	{
 		Dest = Origin + 1;
-		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle() || TrianglePositions.Find(Dest) == -1))
+		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle || TrianglePositions.Find(Dest) == -1))
 		{
 			nextPath = pathToHere;
 			nextPath.Path.Add(Dest);
@@ -76,7 +132,7 @@ function FindNumSteps(GhostHerdersPawn GHPawn, int Origin, TilePath pathToHere, 
 	if (Origin >= GRID_NUM_COLUMNS)
 	{
 		Dest = Origin + GRID_NUM_COLUMNS;
-		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle() || TrianglePositions.Find(Dest) == -1))
+		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle || TrianglePositions.Find(Dest) == -1))
 		{
 			nextPath = pathToHere;
 			nextPath.Path.Add(Dest);
@@ -86,7 +142,7 @@ function FindNumSteps(GhostHerdersPawn GHPawn, int Origin, TilePath pathToHere, 
 	if (Origin <= GRID_NUM_ROWS * GRID_NUM_COLUMNS - 1 - GRID_NUM_COLUMNS)
 	{
 		Dest = Origin - GRID_NUM_COLUMNS;
-		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle() || TrianglePositions.Find(Dest) == -1))
+		if (GhostCharacterPositions.Find(Dest) == -1 && (!GHPawn.IsCarryingTriangle || TrianglePositions.Find(Dest) == -1))
 		{
 			nextPath = pathToHere;
 			nextPath.Path.Add(Dest);

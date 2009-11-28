@@ -8,6 +8,22 @@ simulated function clicked()
 
 }
 
+// Move a random number of steps 1 through 4
+function MoveGrid()
+{
+	local int i, NumSteps;
+
+	NumSteps = Rand(4) + 1;
+	for (i = 0; i < NumSteps; i++)
+	{
+		MoveForward();
+	}
+}
+
+function MoveForward()
+{
+}
+
 DefaultProperties
 {
     BlockRigidBody=true
