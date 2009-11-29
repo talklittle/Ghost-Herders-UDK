@@ -50,12 +50,34 @@ function SwitchPlayers()
 		// Flip coin after both players have gone
 		IsCoinheads = !IsCoinHeads;
 	}
+
+	DisableInput();
 	
 	// Chester moves
 	Chester.MoveGrid();
 
 	// After Chester is done moving, the player can move
+	EnableInput();
 }
+
+function DisableInput()
+{
+	local PlayerController PC;
+	foreach WorldInfo.AllControllers(class'PlayerController', PC)
+	{
+		PC.GoToState('Waiting');
+	}
+}
+
+function EnableInput()
+{
+	local PlayerController PC;
+	foreach WorldInfo.AllControllers(class'PlayerController', PC)
+	{
+		PC.GoToState('');
+	}
+}
+
 
 function SelectPawn(GhostHerdersPawn GHPawn)
 {
@@ -83,7 +105,9 @@ function SelectDestination(GhostHerdersPawn GHPawn, Vector Destination)
 	// Destination is valid if number of steps is tractable by Pawn
 	if (GridShortestPaths[GridIndex].NumSteps <= GHPawn.GetAP(IsCoinHeads))
 	{
+		DisableInput();
 		GHPawn.MoveGrid(DestRow, DestColumn);
+		EnableInput();
 	}
 }
 

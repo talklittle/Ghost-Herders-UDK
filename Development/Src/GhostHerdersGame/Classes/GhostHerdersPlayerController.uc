@@ -40,6 +40,15 @@ exec function StartFire( optional byte FireModeNum )
 }
 
 
+state Waiting
+{
+	exec function StartFire( optional byte FireModeNum )
+	{
+	}
+}
+
+
+
 
 defaultproperties
 {
