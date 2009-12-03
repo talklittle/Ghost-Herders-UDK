@@ -1,4 +1,5 @@
-class GhostHerdersPawn extends GamePawn;
+class GhostHerdersPawn extends GamePawn
+	placeable;
 
 var int GridRow, GridColumn;
 // TODO: In the future could use Controller "Owner" var defined in Actor.
