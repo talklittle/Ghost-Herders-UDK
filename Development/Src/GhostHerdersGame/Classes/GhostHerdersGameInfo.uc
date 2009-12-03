@@ -25,6 +25,19 @@ var bool IsCoinHeads;
 var array<int> GhostCharacterPositions;
 var array<int> TrianglePositions;
 
+event PostBeginPlay()
+{
+	local GhostCharacter C;
+
+	Super.PostBeginPlay();
+
+	// Grab the ghost reference
+	foreach WorldInfo.AllActors(class'GhostCharacter', C)
+	{
+		Chester = C;
+	}
+}
+
 static function GridFromLocation(Vector GridLocation, out int GridRow, out int GridColumn)
 {
 	local Vector CorrectedLocation;
@@ -37,8 +50,6 @@ static function GridFromLocation(Vector GridLocation, out int GridRow, out int G
 
 function SwitchPlayers()
 {
-	local int i;
-
 	// Flip "coin" if necessary
 	If (CurrentPlayer == 1)
 	{
