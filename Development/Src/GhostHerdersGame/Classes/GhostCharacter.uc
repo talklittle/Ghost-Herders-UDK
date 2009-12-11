@@ -3,6 +3,8 @@
 class GhostCharacter extends KAssetSpawnable
         placeable;
 
+var Vector Destination;
+
 simulated function clicked()
 {
 

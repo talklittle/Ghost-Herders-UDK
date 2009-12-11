@@ -35,6 +35,7 @@ event PostBeginPlay()
 	foreach WorldInfo.AllActors(class'GhostCharacter', C)
 	{
 		Chester = C;
+		`log("Found Chester!");
 	}
 }
 
