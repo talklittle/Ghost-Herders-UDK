@@ -1,13 +1,12 @@
-class GhostHerdersPlayerController extends UTPlayerController;
-	
+class GhostHerdersPlayerController extends PlayerController;
+
 // The player wants to fire.
 exec function StartFire( optional byte FireModeNum )
 {
 	local GhostCharacter C;
 	local GhostHerdersHUD ghHUD;
-	local float CamDist;
 	local vector TraceStart, TraceEnd, HitLocation, HitNormal;
-	local TraceHitInfo HitInfo;
+	local int GridRow, GridColumn;
 
 	if ( WorldInfo.Pauser == PlayerReplicationInfo )
 	{
@@ -24,21 +23,61 @@ exec function StartFire( optional byte FireModeNum )
 			TraceStart = ghHUD.WorldOrigin;
 			// Trace ends at Board
 			TraceEnd = ghHUD.WorldOrigin + ghHUD.WorldDirection*50000;
+			if (Trace(HitLocation, HitNormal, TraceEnd, TraceStart, false) != None)
+			{
+				//HitLocation += class'GhostHerdersGameInfo'.const.MAP_CORRECTION_VECTOR;
+				//`log("Level corrected HitLocation"@HitLocation);
+				class'GhostHerdersGameInfo'.static.GridFromLocation(HitLocation, GridRow, GridColumn);
+				`log("Level Grid Row, Column"@GridRow@GridColumn);
+
+				// FIXME: SetDesiredRotation on Pawn
+				//C.SetDesiredRotation(Rotator(HitLocation - C.Location));
+				C.Destination = HitLocation;
+			}
 			if (GhostCharacter(Trace(HitLocation, HitNormal, TraceEnd, TraceStart)) != None)
 			{
-			  `log("hi");
+				HitLocation += class'GhostHerdersGameInfo'.const.MAP_CORRECTION_VECTOR;
+				`log("Corrected HitLocation"@HitLocation);
 			}
 		}
 	}
 }
 
-
-
-event Possess(Pawn inPawn, bool bVehicleTransition)
+function PlayerMove(float DeltaTime)
 {
-	Super.Possess(inPawn, bVehicleTransition);
-	SetBehindView(true);	
+	local Vector NewAccel;
+	local eDoubleClickDir DoubleClickMove;
+	local GhostCharacter C;
+
+	Super.PlayerMove(DeltaTime);
+
+	C = GhostHerdersGameInfo(WorldInfo.Game).Chester;
+
+	NewAccel = Normal(C.Destination - C.Location);
+
+	DoubleClickMove = 0;
+
+	if( Role < ROLE_Authority ) // then save this move and replicate it
+	{
+		//ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
+		ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, rot(0,0,0));
+	}
+	else
+	{
+		ProcessMove(DeltaTime, NewAccel, DoubleClickMove, rot(0,0,0));
+	}
 }
+
+
+state Waiting
+{
+	exec function StartFire( optional byte FireModeNum )
+	{
+	}
+}
+
+
+
 
 defaultproperties
 {
